@@ -15,13 +15,13 @@ while (<>) {
     @global_rx = qx/global -rx $tagname/;
     if (@global_rx > 0) {
         foreach (@global_rx) {
-            print ">>> REF: $_\n";
+            #print ">>> REF: $_\n";
             m#^(\w*)\s+(\d+)\s+([\w\/\.]*)\s(.*)$#;
 
-            print "> >>> tag:'$1'\n";
-            print "> >>> num:'$2'\n";
-            print "> >>> path:'$3'\n";
-            print "> >>> pattern:'$4'\n";
+            #print "> >>> tag:'$1'\n";
+            #print "> >>> num:'$2'\n";
+            #print "> >>> path:'$3'\n";
+            #print "> >>> pattern:'$4'\n";
             $tag = $1;
             $path = $3;
             $pattern = $4;
