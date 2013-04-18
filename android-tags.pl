@@ -1,43 +1,47 @@
 #!/bin/bash
-
-# AndroidManifest.xml、src ディレクトリの存在を確認する
-# gen やその他のソースは無視したい
-
-# 対象とするディレクトリ
-# src/ res/
+#-----------------------------------------------------------------------------
+# Android Project のタグファイル生成スクリプト
+#-----------------------------------------------------------------------------
 #
-# 対象とするソースファイルのサフィックス
-# .c .cpp .h .hpp .java .xml
+# 生成するタグファイル、クロスリファレンス:
+#   ctags, gtags, cscope, rtags
+#   
+# 検索対象ディレクトリ:
+#   src/ res/
+#
+# 対象とするソースファイルのサフィックス:
+#   .c .cpp .h .hpp .java .xml
+#
+# Usage:
+#   android-tags [-f]
+#
+# Options:
+#   -f   強制アップデート
 
-# usage: android-tags [-u]
-
-#if (( $# == 0 )); then
-#    echo "usage: android-tags [FILE|DIR] ..."
-#    exit
-#fi
-
+#-----------------------------------------------------------------------------
+# ファイルリスト名定義
 NEWLIST=.tagfiles
 OLDLIST=.tagfiles_prev
 
 # オプション解析
-while getopts "u" flag; do
+while getopts "f" flag; do
     case $flag in
         \?) OPT_ERROR=1; break;;
-        u) opt_u=1;;
+        f) opt_f=1;;
     esac
 done
 
 if [[ $OPT_ERROR == 1 ]]; then
-    echo "Usage: android-tags [-u]"
+    echo "Usage: android-tags [-f]"
     exit
 fi
 
 shift $(( $OPTIND - 1 ))
 
-MANIFEST=AndroidManifest.xml
-
 # Android プロジェクトとして期待するファイル・ディレクトリ構成
 # であることをチェック
+MANIFEST=AndroidManifest.xml
+
 if [[ ! -f $MANIFEST ]]; then
     echo "No such file: $MANIFEST"
     exit
@@ -50,8 +54,8 @@ for dir in src res; do
     fi
 done
 
-# オプション -u が指定されたときは強制的にアップデートを行う
-if [[ $opt_u == 1 ]]; then
+# オプション -f が指定されたときは強制的にアップデートを行う
+if [[ $opt_f == 1 ]]; then
     echo "### force update"
     rm -f $NEWLIST
 fi
@@ -75,8 +79,9 @@ done
 # 対象ファイルに変更がなければ更新不要と判断して終了
 if [[ -f $OLDLIST ]]; then
     while read target; do
-        echo "+++ $target"
+        #echo "+++ $target"
         if [[ $target -nt $OLDLIST ]]; then
+            echo "+++ $target has been updated since last run. +++"
             UPDATED=1
             break
         fi
@@ -90,7 +95,7 @@ fi
 
 rm -f $OLDLIST
 
-# リストアップしたファイルについてタグファイルを作成する
+# リストアップしたファイル群に対するタグファイルを作成する
 echo "--- ctags ---"
 ctags -L $NEWLIST
 
