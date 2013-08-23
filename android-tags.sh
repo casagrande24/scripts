@@ -7,7 +7,7 @@
 #   ctags, gtags, cscope, rtags
 #   
 # 検索対象ディレクトリ:
-#   src/ res/
+#   src/ res/ jni/
 #
 # 対象とするソースファイルのサフィックス:
 #   .c .cpp .h .hpp .java .xml
@@ -71,9 +71,11 @@ fi
 
 echo $MANIFEST > $NEWLIST
 
-for dir in src res; do
-  echo "find $dir -type f -print | fgrep $GREP_PATTERN >> $NEWLIST"
-  find $dir -type f -print | egrep $GREP_PATTERN >> $NEWLIST
+for dir in src res jni; do
+    if [[ -d $dir ]]; then
+        echo "find $dir -type f -print | fgrep $GREP_PATTERN >> $NEWLIST"
+        find $dir -type f -print | egrep $GREP_PATTERN >> $NEWLIST
+    fi
 done
 
 # 対象ファイルに変更がなければ更新不要と判断して終了
