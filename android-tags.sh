@@ -54,6 +54,13 @@ for dir in src res; do
     fi
 done
 
+for dir; do
+    if [[ ! -d $dir ]]; then
+        echo "No such directory: $dir"
+        exit
+    fi
+done
+
 # オプション -f が指定されたときは強制的にアップデートを行う
 if [[ $opt_f == 1 ]]; then
     echo "### force update"
@@ -73,15 +80,20 @@ echo $MANIFEST > $NEWLIST
 
 for dir in src res jni; do
     if [[ -d $dir ]]; then
-        echo "find $dir -type f -print | fgrep $GREP_PATTERN >> $NEWLIST"
+        echo "find $dir -type f -print | egrep $GREP_PATTERN >> $NEWLIST"
         find $dir -type f -print | egrep $GREP_PATTERN >> $NEWLIST
     fi
 done
 
-# 対象ファイルに変更がなければ更新不要と判断して終了
+for dir; do
+    echo "find $dir -type f -print | egrep $GREP_PATTERN >> $NEWLIST"
+    find $dir -type f -print | egrep $GREP_PATTERN >> $NEWLIST
+done
+
+# 旧リストファイルの作成以降に更新されたファイルがひとつも無ければタグは更新不要と判断して終了
 if [[ -f $OLDLIST ]]; then
     while read target; do
-        #echo "+++ $target"
+        echo "+++ $target"
         if [[ $target -nt $OLDLIST ]]; then
             echo "+++ $target has been updated since last run. +++"
             UPDATED=1

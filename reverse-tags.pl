@@ -11,7 +11,7 @@ while (<>) {
     $tagname = $1;
     next if ($tagname =~ /^$/);
     next if ($tagname eq $last);
-    print "------ tag name: [$tagname]\n";
+    #print "------ tag name: [$tagname]\n";
     $last = $tagname;
 
     @global_rx = qx/global -rx $tagname/;
