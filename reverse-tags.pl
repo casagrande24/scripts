@@ -44,7 +44,6 @@ while (<>) {
 open(RTAGS, ">RTAGS");
 
 print RTAGS <<HEADER;
-! vim:filetype=tags
 !_TAG_FILE_FORMAT   2   /extended format; --format=1 will not append ;" to lines/
 !_TAG_FILE_SORTED   1   /0=unsorted, 1=sorted, 2=foldcase/
 !_TAG_PROGRAM_AUTHOR    Tokikazu Ohya  /toki.ohya@gmail.com/
@@ -56,4 +55,9 @@ HEADER
 foreach (@sorted_refs) {
     print RTAGS  $_;
 }
+
+print RTAGS <<FOOTER;
+! vim:filetype=tags
+FOOTER
+
 close(RTAGS);
